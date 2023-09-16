@@ -35,6 +35,7 @@ namespace InputHandler
             }
         }
 
+        //If the user types 001, it will be counted as 1
         int xValue = std::stoi(widthInput);
         int yValue = std::stoi(heightInput);
 
