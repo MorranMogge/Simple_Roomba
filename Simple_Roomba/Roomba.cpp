@@ -9,7 +9,7 @@ void Roomba::updateRotation()
 	//Convert degrees to radians
 	float radians = (float)this->rotation * PI / 180.f;
 
-	//By using this way of calculating the direction, we will be albe to calculate any degree of rotation
+	//By using this way of calculating the direction, we will be albe to calculate any degree of rotation, we use round() right now since our current interest is only whole numbers
 	this->direction = Vector2(round(cos(radians)), round(sin(radians)));
 
 	//Normalize ensures that the length direction vector is always 1, which is important if the app is developed furthur
