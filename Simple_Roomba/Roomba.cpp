@@ -55,12 +55,14 @@ void Roomba::interpretCommand(char command)
 	//Interpret the command given a char
 	switch (command)
 	{
+		//Rotate the roomba clockwise or counterclockwise
 		case 'd':
 			rotate(-90);
 			break;
 		case 'a':
 			rotate(90);
 			break;
+		//Move the roomba forward or backwards
 		case 'w':
 			move(1);
 			break;

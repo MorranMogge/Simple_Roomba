@@ -51,7 +51,7 @@ namespace InputHandler
         return true;
     }
 
-    void HandleSizeAndPositionInput(std::string infoText, std::string& input, Vector2& output)
+    void HandleSizeAndPositionInput(const std::string& infoText, std::string& input, Vector2& output)
     {
         bool outputCreated = false;
         //We keep giving the user the prompt until they write a correct input
@@ -65,9 +65,10 @@ namespace InputHandler
         }
     }
 
-    void HandleDirectionInput(std::string infoText, std::string& input)
+    void HandleDirectionInput(const std::string& infoText, std::string& input)
     {
         bool correctString = false;
+        //We keep giving the user the prompt until they write a correct input
         while (!correctString)
         {
             std::cout << infoText;
@@ -80,7 +81,7 @@ namespace InputHandler
         }
     }
 
-    void HandleCommandsInput(std::string infoText, std::string& input)
+    void HandleCommandsInput(const std::string& infoText, std::string& input)
     {
         bool correctString = false;
         while (!correctString)

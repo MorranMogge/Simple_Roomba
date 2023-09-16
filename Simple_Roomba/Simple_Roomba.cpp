@@ -19,7 +19,6 @@ bool checkForValidPosition(Vector2 position, Vector2 roomSize)
 int main()
 {
     std::cout << "This is a roomba service, to function I ask you to fill in some information.\n";
-   
     
     Vector2 roomSize;
     Vector2 startPosition;
@@ -29,13 +28,14 @@ int main()
     std::string startDirectionInput;
     std::string commands;
     
+    //Now we start taking inputs from the user
     InputHandler::HandleSizeAndPositionInput("Enter the size of your room in meters, fill in by typing for example 8x4\n", roomSizeInput, roomSize);
 
     //Start position also need to be checked whether it is inside the room
     bool validStartposition = false;
     while (!validStartposition)
     {
-        InputHandler::HandleSizeAndPositionInput("Enter the start position of your roomba, fill in by typing for example 1x2\n", startPositionInput, startPosition);
+        InputHandler::HandleSizeAndPositionInput("Enter the start position of your roomba, fill in by typing for example 4x2\n", startPositionInput, startPosition);
         validStartposition = checkForValidPosition(startPosition, roomSize);
     }
      
@@ -48,6 +48,7 @@ int main()
     Roomba roomba;
     roomba.setPosition(startPosition);
     roomba.setRotation(startDirectionInput[0]);
+
 
     int index = 0;
     int commandSize = commands.size();
