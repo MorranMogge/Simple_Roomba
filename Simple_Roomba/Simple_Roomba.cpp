@@ -43,12 +43,11 @@ int main()
     InputHandler::HandleCommandsInput("Enter the commands your roomba, fill in by typing a string containing w, d, s or a\n", commands);
     //Now all the inputs are finished and checks whether they are invalid have been made
 
-    std::cout << "Starting roomba: Executing commands" + commands + "\n";
+    std::cout << "Starting roomba: Executing commands: [" + commands + "]\n";
     //Now we can create the roomba and give it the starting values
     Roomba roomba;
     roomba.setPosition(startPosition);
     roomba.setRotation(startDirectionInput[0]);
-
 
     int index = 0;
     int commandSize = commands.size();
