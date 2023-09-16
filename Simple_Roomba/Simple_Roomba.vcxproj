@@ -127,10 +127,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="Roomba.cpp" />
     <ClCompile Include="Simple_Roomba.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="InputHandler.h" />
     <ClInclude Include="Roomba.h" />
     <ClInclude Include="Vector2.h" />
   </ItemGroup>

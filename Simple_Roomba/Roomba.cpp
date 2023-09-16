@@ -12,7 +12,7 @@ void Roomba::updateRotation()
 	//By using this way of calculating the direction, we will be albe to calculate any degree of rotation
 	this->direction = Vector2(round(cos(radians)), round(sin(radians)));
 
-	//Normalize ensures that the length direction vector is always 1, which is important if more degrees of movement are added
+	//Normalize ensures that the length direction vector is always 1, which is important if the app is developed furthur
 	this->direction.Normalize();
 }
 
@@ -28,16 +28,16 @@ void Roomba::setPosition(Vector2 newPos)
 
 void Roomba::setRotation(char inRotation)
 {
-	//Set the rotation, where we assume that 'd' is right and 'w' is up
+	//Set the rotation
 	switch (inRotation)
 	{
-		case 'd':
+		case 'e':
 			rotation = 0;
 			break;
-		case 'w':
+		case 'n':
 			rotation = 90;
 			break;
-		case 'a':
+		case 'w':
 			rotation = 180;
 			break;
 		case 's':
