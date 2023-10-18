@@ -3,8 +3,8 @@
 class RoombaApp
 {
 public:
-    RoombaApp();
-    ~RoombaApp();
+    RoombaApp() = default;
+    ~RoombaApp() = default;
 
     void Run();
 };

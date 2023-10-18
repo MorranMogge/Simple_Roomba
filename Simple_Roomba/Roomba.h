@@ -38,5 +38,4 @@ public:
 
 	Vector2 getPosition() const;
 	Vector2 getDirection() const;
-
 };

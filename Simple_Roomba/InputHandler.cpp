@@ -26,21 +26,25 @@ bool positionIsValid(Vector2 position, Vector2 roomSize)
 
 Commands convertCharToCommand(char character)
 {
+    Commands cmd = Commands::FORWARD;
+
     switch (character)
     {
     case 'w':
-        return Commands::FORWARD;
+        cmd = Commands::FORWARD;
         break;
     case 's':
-        return Commands::BACKWARD;
+        cmd = Commands::BACKWARD;
     case 'a':
-        return Commands::LEFT;
+        cmd = Commands::LEFT;
     case 'd':
-        return Commands::RIGHT;
+        cmd = Commands::RIGHT;
     default:
-        return Commands::FORWARD;
+        cmd = Commands::FORWARD;
         break;
     }
+
+    return cmd;
 }
 
 int convertCharToRotation(char character)
@@ -68,55 +72,62 @@ int convertCharToRotation(char character)
     return rotation;
 }
 
-namespace InputHandler
+bool checkForCorrectInput(const std::string& input, char delimiter, Vector2& output)
 {
-    bool checkForCorrectInput(const std::string& input, char delimiter, Vector2& output)
+    std::string widthInput = "";
+    std::string heightInput = "";
+
+    int widthOrHeight = 0;
+
+    //By creating a variable, we do not have to check the size of the string every iteration of the loop
+    int sizeOfString = input.size();
+    for (auto it = input.begin(); it != input.end(); ++it)
     {
-        std::string widthInput = "";
-        std::string heightInput = "";
-
-        int widthOrHeight = 0;
-
-        //By creating a variable, we do not have to check the size of the string every iteration of the loop
-        int sizeOfString = input.size();
-        for (int i = 0; i < sizeOfString; i++)
+        //Delimiter is used to divide up the numbers to two seperate
+        if (*it == delimiter)
+            widthOrHeight++;
+        
+        else if (IsNumber(*it))
         {
-            //Delimiter is used to divide up the numbers to two seperate
-            if (input[i] == delimiter)
-                widthOrHeight++;
-           
-            else if (IsNumber(input[i]))
-            {
-                //wdithOrHeight keeps track of which number we are adding to
-                if (widthOrHeight == 0)
-                    widthInput += input[i];
-                else
-                    heightInput += input[i];
-            }
+            //wdithOrHeight keeps track of which number we are adding to
+            if (widthOrHeight == 0)
+                widthInput += *it;
             else
-            {
-                //In case we see invalid characters such as j, we send an error message
-                std::cout << "Invalid input: [" << input << "]\n Expected two nubers\n";
-                return false;
-            }
+                heightInput += *it;
         }
-
-        //If the user types 001, it will be counted as 1
-        int xValue = std::stoi(widthInput);
-        int yValue = std::stoi(heightInput);
-
-        //Checks whether one of the numbers are 0
-        if (xValue < 1 || yValue < 1)
+        else
         {
-            std::cout << "Value can not be smaller than 1, you input [" << xValue << "x" << yValue << "] try again\n";
+            //In case we see invalid characters such as j, we send an error message
+            std::cout << "Invalid input: [" << input << "]\n Expected two nubers\n";
             return false;
         }
-
-        output.x = xValue;
-        output.y = yValue;
-
-        return true;
     }
+
+    if (widthInput.size() < 1 || heightInput.size() < 1)
+    {
+        std::cout << "Invalid output\n";
+        return false;
+    }
+
+    //If the user types 001, it will be counted as 1
+    int xValue = std::stoi(widthInput);
+    int yValue = std::stoi(heightInput);
+
+    //Checks whether one of the numbers are 0
+    if (xValue < 1 || yValue < 1)
+    {
+        std::cout << "Value can not be smaller than 1, you input [" << xValue << "x" << yValue << "] try again\n";
+        return false;
+    }
+
+    output.x = xValue;
+    output.y = yValue;
+
+    return true;
+}
+
+namespace InputHandler
+{
 
     void HandleRoombaInputs(RoombaData& rbData)
     {
@@ -185,13 +196,12 @@ namespace InputHandler
             std::cout << infoText;
             std::getline(std::cin, input);
 
-            int stringSize = input.size();
-            for (int i = 0; i < stringSize && correctString; i++)
+            for (auto it = input.begin(); it != input.end(); ++it)
             {
                 //If one of the characters are wrong, the user must try again
-                if (input[i] != 'w' && input[i] != 'd' && input[i] != 's' && input[i] != 'a')
+                if (*it != 'w' && *it != 'd' && *it != 's' && *it != 'a')
                 {
-                    std::cout << "Invalid input: [" << input[i] << "]\n Expected either w, d, s or a\n";
+                    std::cout << "Invalid input: [" << *it << "]\n Expected either w, d, s or a\n";
                     correctString = false;
                 }
             }

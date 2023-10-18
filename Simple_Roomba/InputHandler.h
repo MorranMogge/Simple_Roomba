@@ -5,8 +5,7 @@
 
 namespace InputHandler
 {
-	bool checkForCorrectInput(const std::string& input, char delimiter, Vector2& output);
-
+	//This is the most important function, it sets up the pipeline for inputting the data needed
 	void HandleRoombaInputs(RoombaData& rbData);
 
 	void HandleSizeAndPositionInput(const std::string& infoText, Vector2& output);
