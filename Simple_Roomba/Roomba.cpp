@@ -2,96 +2,55 @@
 #include <math.h>
 #include <iostream>
 
-#define PI 3.14159265358979323846
-
 void Roomba::updateRotation()
 {
 	//Convert degrees to radians
-	float radians = (float)this->rotation * PI / 180.f;
+	float radians = (float)m_rotation * M_PI / 180.f;
 
 	//By using this way of calculating the direction, we will be albe to calculate any degree of rotation, we use round() right now since our current interest is only whole numbers
-	this->direction = Vector2(round(cos(radians)), round(sin(radians)));
+	m_direction = Vector2(round(cos(radians)), round(sin(radians)));
 
 	//Normalize ensures that the length direction vector is always 1, which is important if the app is developed furthur
-	this->direction.Normalize();
+	m_direction.Normalize();
 }
 
 Roomba::Roomba()
-	:position(Vector2()), direction(Vector2()), rotation(0)
+	:m_position(Vector2()), m_direction(Vector2()), m_rotation(0)
 {
 }
 
-void Roomba::setPosition(Vector2 newPos)
+Roomba::Roomba(const RoombaData& rbData)
+	:m_position(rbData.startPosition.x, rbData.startPosition.y), m_rotation(rbData.startRotation)
 {
-	this->position = newPos;
-}
-
-void Roomba::setRotation(char inRotation)
-{
-	//Set the rotation
-	switch (inRotation)
-	{
-		case 'e':
-			rotation = 0;
-			break;
-		case 'n':
-			rotation = 90;
-			break;
-		case 'w':
-			rotation = 180;
-			break;
-		case 's':
-			rotation = 270;
-			break;
-		default:
-			break;
-	}
-
 	updateRotation();
+
 }
 
-void Roomba::interpretCommand(char command)
-{
-	//Interpret the command given a char
-	switch (command)
-	{
-		//Rotate the roomba clockwise or counterclockwise
-		case 'd':
-			rotate(-90);
-			break;
-		case 'a':
-			rotate(90);
-			break;
-		//Move the roomba forward or backwards
-		case 'w':
-			move(1);
-			break;
-		case 's':
-			move(-1);
-			break;
-		default:
-			break;
-	}
-}
 
 void Roomba::rotate(int degree)
 {
-	rotation += degree;
+	m_rotation += degree;
 	updateRotation();
 }
 
 void Roomba::move(int fwd)
 {
-	this->position = this->position + Vector2(fwd * this->direction.x, fwd * this->direction.y);
+	m_position = m_position + Vector2(fwd * m_direction.x, fwd * m_direction.y);
+}
+
+void Roomba::printPositionData()
+{
+	std::cout << "Position: (" << (int)m_position.x << "x" << (int)m_position.y << ") " 
+	<< "Direction: (" << (int)m_direction.x << ", " << (int)m_direction.y << ")\n";
 }
 
 Vector2 Roomba::getPosition() const
 {
-	return this->position;
+	return m_position;
 }
 
 Vector2 Roomba::getDirection() const
 {
-	return this->direction;
+	return m_direction;
 }
 

@@ -13,6 +13,61 @@ bool IsNumber(char character)
     return ASCIIvalue >= lowerLimit && ASCIIvalue <= upperLimit;
 }
 
+bool positionIsValid(Vector2 position, Vector2 roomSize)
+{
+    //In case it goes out of bounds, we write an error message and return false
+    if (position.x < 1 || position.y < 1 ||position.x > roomSize.x || position.y > roomSize.y)
+    {
+        std::cout << "Invalid position: [" << position.x << "x" << position.y << "]\nRoomba is outside of room (" << roomSize.x << "x" << roomSize.y << ")\n";
+        return false;
+    }
+    return true;
+}
+
+Commands convertCharToCommand(char character)
+{
+    switch (character)
+    {
+    case 'w':
+        return Commands::FORWARD;
+        break;
+    case 's':
+        return Commands::BACKWARD;
+    case 'a':
+        return Commands::LEFT;
+    case 'd':
+        return Commands::RIGHT;
+    default:
+        return Commands::FORWARD;
+        break;
+    }
+}
+
+int convertCharToRotation(char character)
+{
+    int rotation = 0;
+    //Set the rotation
+	switch (character)
+	{
+		case 'e':
+			rotation = 0;
+			break;
+		case 'n':
+			rotation = 90;
+			break;
+		case 'w':
+			rotation = 180;
+			break;
+		case 's':
+			rotation = 270;
+			break;
+		default:
+			break;
+	}
+
+    return rotation;
+}
+
 namespace InputHandler
 {
     bool checkForCorrectInput(const std::string& input, char delimiter, Vector2& output)
@@ -63,6 +118,25 @@ namespace InputHandler
         return true;
     }
 
+    void HandleRoombaInputs(RoombaData& rbData)
+    {
+
+        //Now we start taking inputs from the user
+        InputHandler::HandleSizeAndPositionInput("Enter the size of your room in meters, fill in by typing for example 8x4\n", rbData.roomSize);
+    
+        //Start position also need to be checked whether it is inside the room
+        bool validStartposition = false;
+        while (!validStartposition)
+        {
+            InputHandler::HandleSizeAndPositionInput("Enter the start position of your roomba, fill in by typing for example 4x2\n", rbData.startPosition);
+            validStartposition = positionIsValid(rbData.startPosition, rbData.roomSize);
+        }
+
+        InputHandler::HandleDirectionInput("Enter the starting direction of your roomba, fill in by typing w, e, s or n\n", rbData.startRotation);
+        InputHandler::HandleCommandsInput("Enter the commands your roomba, fill in by typing a string containing w, d, s or a\n", rbData.commands);
+
+    }
+
     void HandleSizeAndPositionInput(const std::string& infoText, Vector2& output)
     {
         std::string input;
@@ -79,7 +153,7 @@ namespace InputHandler
         }
     }
 
-    void HandleDirectionInput(const std::string& infoText)
+    void HandleDirectionInput(const std::string& infoText, int& rotation)
     {
         std::string input;
 
@@ -95,10 +169,14 @@ namespace InputHandler
             else
                 std::cout << "Invalid input: [" << input << "]\n Expected either w, e, s or n\n";
         }
+
+        rotation = convertCharToRotation(input[0]);
     }
 
-    void HandleCommandsInput(const std::string& infoText, std::string& input)
+    void HandleCommandsInput(const std::string& infoText, std::vector<Commands>& commands)
     {
+        std::string input;
+
         bool correctString = false;
         while (!correctString)
         {
@@ -117,6 +195,10 @@ namespace InputHandler
                     correctString = false;
                 }
             }
+        }
+
+        for (auto it = input.begin(); it != input.end(); ++it) {
+            commands.emplace_back(convertCharToCommand(*it));
         }
     }
 }
