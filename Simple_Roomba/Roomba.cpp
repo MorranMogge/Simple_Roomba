@@ -1,6 +1,18 @@
 #include "Roomba.h"
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <iostream>
+
+bool Roomba::outOfBounds()
+{
+	bool oob = (m_position.x < 0) | (m_position.y < 0) |
+		(m_position.x > m_roomSize.x) | (m_position.y > m_roomSize.y);
+	
+	if (oob)
+		std::cout << "Roomba went out of bounds\n";
+	
+	return oob;
+}
 
 void Roomba::updateRotation()
 {
@@ -20,7 +32,8 @@ Roomba::Roomba()
 }
 
 Roomba::Roomba(const RoombaData& rbData)
-	:m_position(rbData.startPosition.x, rbData.startPosition.y), m_rotation(rbData.startRotation)
+	:m_position(rbData.startPosition.x, rbData.startPosition.y), 
+	m_roomSize(rbData.roomSize.x, rbData.roomSize.y), m_rotation(rbData.startRotation)
 {
 	updateRotation();
 
@@ -33,9 +46,10 @@ void Roomba::rotate(int degree)
 	updateRotation();
 }
 
-void Roomba::move(int fwd)
+bool Roomba::move(int fwd)
 {
 	m_position = m_position + Vector2(fwd * m_direction.x, fwd * m_direction.y);
+	return !outOfBounds();
 }
 
 void Roomba::printPositionData()

@@ -24,8 +24,10 @@ class Roomba
 private:
 	Vector2 m_position;
 	Vector2 m_direction;
+	Vector2 m_roomSize;
 	int m_rotation;
 
+	bool outOfBounds();
 	void updateRotation();
 
 public:
@@ -33,7 +35,7 @@ public:
 	Roomba(const RoombaData& rbData);
 
 	void rotate(int degree);
-	void move(int fwd);
+	bool move(int fwd);
 	void printPositionData();
 
 	Vector2 getPosition() const;

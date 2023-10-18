@@ -35,10 +35,13 @@ Commands convertCharToCommand(char character)
         break;
     case 's':
         cmd = Commands::BACKWARD;
+        break;
     case 'a':
         cmd = Commands::LEFT;
+        break;
     case 'd':
         cmd = Commands::RIGHT;
+        break;
     default:
         cmd = Commands::FORWARD;
         break;
@@ -79,8 +82,6 @@ bool checkForCorrectInput(const std::string& input, char delimiter, Vector2& out
 
     int widthOrHeight = 0;
 
-    //By creating a variable, we do not have to check the size of the string every iteration of the loop
-    int sizeOfString = input.size();
     for (auto it = input.begin(); it != input.end(); ++it)
     {
         //Delimiter is used to divide up the numbers to two seperate

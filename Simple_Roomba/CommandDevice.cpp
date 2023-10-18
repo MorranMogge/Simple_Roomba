@@ -1,4 +1,5 @@
 #include "CommandDevice.h"
+#include <iostream>
 
 CommandDevice::CommandDevice(const std::vector<Commands>& commands) 
 {
@@ -12,7 +13,8 @@ void CommandDevice::SeletRoomba(Roomba& roomba)
 
 void CommandDevice::InterpretCommands()
 {
-    for (auto it = m_commands.begin(); it != m_commands.end(); ++it)
+    bool outOfBounds = false;
+    for (auto it = m_commands.begin(); it != m_commands.end() && !outOfBounds; ++it)
     {
         //Interpret the command given a char
         switch (*it)
@@ -26,15 +28,16 @@ void CommandDevice::InterpretCommands()
                 break;
             //Move the roomba forward or backwards
             case FORWARD:
-                currentRoomba->move(1);
+                outOfBounds = !currentRoomba->move(1);
                 break;
             case BACKWARD:
-                currentRoomba->move(-1);
+                outOfBounds = !currentRoomba->move(-1);
                 break;
             default:
                 break;
         }
+    
+        currentRoomba->printPositionData();
     }
     
-    currentRoomba->printPositionData();
 }
