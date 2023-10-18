@@ -1,6 +1,18 @@
 #include "InputHandler.h"
 #include <iostream>
 
+bool IsNumber(char character)
+{
+
+    //Converts the string to ASCII values, easier to check if they are numbers this way
+    int ASCIIvalue = static_cast<int>(character);
+    int lowerLimit = static_cast<int>('0');
+    int upperLimit = static_cast<int>('9');
+
+    //This also removes the ability to write negative numbers, sinze the ascii code of "-" is not included
+    return ASCIIvalue >= lowerLimit && ASCIIvalue <= upperLimit;
+}
+
 namespace InputHandler
 {
     bool checkForCorrectInput(const std::string& input, char delimiter, Vector2& output)
@@ -17,9 +29,8 @@ namespace InputHandler
             //Delimiter is used to divide up the numbers to two seperate
             if (input[i] == delimiter)
                 widthOrHeight++;
-            //Converts the string to ASCII values, easier to check if they are numbers this way
-            //This also removes the ability to write negative numbers, sinze the ascii code of "-" is not included
-            else if ((int)input[i] > 47 && (int)input[i] < 58)
+           
+            else if (IsNumber(input[i]))
             {
                 //wdithOrHeight keeps track of which number we are adding to
                 if (widthOrHeight == 0)
@@ -52,8 +63,10 @@ namespace InputHandler
         return true;
     }
 
-    void HandleSizeAndPositionInput(const std::string& infoText, std::string& input, Vector2& output)
+    void HandleSizeAndPositionInput(const std::string& infoText, Vector2& output)
     {
+        std::string input;
+
         bool outputCreated = false;
         //We keep giving the user the prompt until they write a correct input
         while (!outputCreated)
@@ -66,8 +79,10 @@ namespace InputHandler
         }
     }
 
-    void HandleDirectionInput(const std::string& infoText, std::string& input)
+    void HandleDirectionInput(const std::string& infoText)
     {
+        std::string input;
+
         bool correctString = false;
         //We keep giving the user the prompt until they write a correct input
         while (!correctString)
