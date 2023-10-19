@@ -7,7 +7,8 @@ enum Commands
 	RIGHT,
 	LEFT,
 	FORWARD,
-	BACKWARD
+	BACKWARD,
+	IDLE
 };
 
 //This is all the data that the roomba needs
@@ -31,7 +32,6 @@ private:
 	void updateRotation();
 
 public:
-	Roomba();
 	Roomba(const RoombaData& rbData);
 
 	void rotate(int degree);

@@ -26,11 +26,6 @@ void Roomba::updateRotation()
 	m_direction.Normalize();
 }
 
-Roomba::Roomba()
-	:m_position(Vector2()), m_direction(Vector2()), m_rotation(0)
-{
-}
-
 Roomba::Roomba(const RoombaData& rbData)
 	:m_position(rbData.startPosition.x, rbData.startPosition.y), 
 	m_roomSize(rbData.roomSize.x, rbData.roomSize.y), m_rotation(rbData.startRotation)

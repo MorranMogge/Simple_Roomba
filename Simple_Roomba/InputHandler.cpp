@@ -1,5 +1,7 @@
 #include "InputHandler.h"
 #include <iostream>
+#include <array>
+#include <algorithm>
 
 bool IsNumber(char character)
 {
@@ -13,7 +15,7 @@ bool IsNumber(char character)
     return ASCIIvalue >= lowerLimit && ASCIIvalue <= upperLimit;
 }
 
-bool positionIsValid(Vector2 position, Vector2 roomSize)
+bool PositionIsValid(Vector2 position, Vector2 roomSize)
 {
     //In case it goes out of bounds, we write an error message and return false
     if (position.x < 1 || position.y < 1 ||position.x > roomSize.x || position.y > roomSize.y)
@@ -24,78 +26,38 @@ bool positionIsValid(Vector2 position, Vector2 roomSize)
     return true;
 }
 
-Commands convertCharToCommand(char character)
+Commands ConvertCharToCommand(char character)
 {
-    Commands cmd = Commands::FORWARD;
-
-    switch (character)
-    {
-    case 'w':
-        cmd = Commands::FORWARD;
-        break;
-    case 's':
-        cmd = Commands::BACKWARD;
-        break;
-    case 'a':
-        cmd = Commands::LEFT;
-        break;
-    case 'd':
-        cmd = Commands::RIGHT;
-        break;
-    default:
-        cmd = Commands::FORWARD;
-        break;
-    }
+    Commands cmd = character == 'w' ? Commands::FORWARD : character == 's' ? Commands::BACKWARD :
+          character == 'a' ? Commands::LEFT : character == 'd'? Commands::RIGHT : Commands::IDLE;
 
     return cmd;
 }
 
-int convertCharToRotation(char character)
+int ConvertCharToRotation(char character)
 {
-    int rotation = 0;
-    //Set the rotation
-	switch (character)
-	{
-		case 'e':
-			rotation = 0;
-			break;
-		case 'n':
-			rotation = 90;
-			break;
-		case 'w':
-			rotation = 180;
-			break;
-		case 's':
-			rotation = 270;
-			break;
-		default:
-			break;
-	}
+    int rotation = character == 'e' ? 0 : character == 'n' ? 90 :
+        character == 'w' ? 180 : character == 's' ? 270 : 0; 
 
     return rotation;
 }
 
-bool checkForCorrectInput(const std::string& input, char delimiter, Vector2& output)
+bool ValidateIfCorrectInput(const std::string& input, char delimiter, Vector2& output)
 {
-    std::string widthInput = "";
-    std::string heightInput = "";
+    const int dimensions = 2;
+    std::array<std::string, dimensions> widthAndHeight;
 
     int widthOrHeight = 0;
-
-    for (auto it = input.begin(); it != input.end(); ++it)
+    //Will keep traversing the string until we are at the last character or if 
+    //enough delimiters are seen, will interpret 5x5x5 as 5x5 if we only work in 2D
+    for (auto it = input.begin(); it != input.end() && widthOrHeight < (int)widthAndHeight.size(); ++it)
     {
         //Delimiter is used to divide up the numbers to two seperate
         if (*it == delimiter)
             widthOrHeight++;
-        
+        //wdithOrHeight keeps track of which number we are adding to
         else if (IsNumber(*it))
-        {
-            //wdithOrHeight keeps track of which number we are adding to
-            if (widthOrHeight == 0)
-                widthInput += *it;
-            else
-                heightInput += *it;
-        }
+            widthAndHeight.at(widthOrHeight) += *it;
         else
         {
             //In case we see invalid characters such as j, we send an error message
@@ -104,35 +66,44 @@ bool checkForCorrectInput(const std::string& input, char delimiter, Vector2& out
         }
     }
 
-    if (widthInput.size() < 1 || heightInput.size() < 1)
+    if (std::count_if(widthAndHeight.begin(), widthAndHeight.end(), [](std::string str){ return str.size() < 1; }))
     {
         std::cout << "Invalid output\n";
         return false;
     }
 
-    //If the user types 001, it will be counted as 1
-    int xValue = std::stoi(widthInput);
-    int yValue = std::stoi(heightInput);
+    std::vector<int> whValues(dimensions);
+
+    //If the user types 001, it will be interpreted as 1
+    auto iterator = widthAndHeight.begin();
+    std::generate_n(whValues.begin(), whValues.size(), [&iterator](){ return std::stoi(*(iterator++)); });
 
     //Checks whether one of the numbers are 0
-    if (xValue < 1 || yValue < 1)
+    if (std::count_if(whValues.begin(), whValues.end(), [](int n){ return n < 1; }))
     {
-        std::cout << "Value can not be smaller than 1, you input [" << xValue << "x" << yValue << "] try again\n";
+        //Writes all the numbers the user input
+        std::cout << "Value can not be smaller than 1, you input [";
+        for (int i = 0; i < (int)widthAndHeight.size(); i++)
+        {
+            std::string tmp = widthAndHeight.at(i);
+            tmp += i != (int)(widthAndHeight.size())-1 ? "x" : "";
+            std::cout << tmp;
+        }
+        std::cout << "] try again\n";
         return false;
     }
 
-    output.x = xValue;
-    output.y = yValue;
+    auto it = whValues.begin();
+    output.x = *it++;
+    output.y = *it;
 
     return true;
 }
 
 namespace InputHandler
 {
-
     void HandleRoombaInputs(RoombaData& rbData)
     {
-
         //Now we start taking inputs from the user
         InputHandler::HandleSizeAndPositionInput("Enter the size of your room in meters, fill in by typing for example 8x4\n", rbData.roomSize);
     
@@ -141,12 +112,11 @@ namespace InputHandler
         while (!validStartposition)
         {
             InputHandler::HandleSizeAndPositionInput("Enter the start position of your roomba, fill in by typing for example 4x2\n", rbData.startPosition);
-            validStartposition = positionIsValid(rbData.startPosition, rbData.roomSize);
+            validStartposition = PositionIsValid(rbData.startPosition, rbData.roomSize);
         }
 
         InputHandler::HandleDirectionInput("Enter the starting direction of your roomba, fill in by typing w, e, s or n\n", rbData.startRotation);
         InputHandler::HandleCommandsInput("Enter the commands your roomba, fill in by typing a string containing w, d, s or a\n", rbData.commands);
-
     }
 
     void HandleSizeAndPositionInput(const std::string& infoText, Vector2& output)
@@ -161,7 +131,7 @@ namespace InputHandler
             std::getline(std::cin, input);
 
             //If the input is correct and we are able to create an output, end the while loop
-            outputCreated = checkForCorrectInput(input, 'x', output);
+            outputCreated = ValidateIfCorrectInput(input, 'x', output);
         }
     }
 
@@ -182,12 +152,12 @@ namespace InputHandler
                 std::cout << "Invalid input: [" << input << "]\n Expected either w, e, s or n\n";
         }
 
-        rotation = convertCharToRotation(input[0]);
+        rotation = ConvertCharToRotation(input[0]);
     }
 
     void HandleCommandsInput(const std::string& infoText, std::vector<Commands>& commands)
     {
-        std::string input;
+        std::string input ;
 
         bool correctString = false;
         while (!correctString)
@@ -208,8 +178,9 @@ namespace InputHandler
             }
         }
 
+        //Converts the recored inputs to commands by converting the chars
         for (auto it = input.begin(); it != input.end(); ++it) {
-            commands.emplace_back(convertCharToCommand(*it));
+            commands.emplace_back(ConvertCharToCommand(*it));
         }
     }
 }
