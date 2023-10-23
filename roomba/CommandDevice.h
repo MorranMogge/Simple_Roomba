@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
-#include "Roomba.h"
 #include <memory>
 #include <vector>
+#include "Roomba.h"
 
 //CommandDevice can be thought of as an app on your phone,
 //where you can select a roomba and tell it what to do

@@ -1,0 +1,1 @@
+g++ -std=c++14 -O3 -Wall EntryPoint/main.cpp utils/InputHandler.cpp roomba/Roomba.cpp application/RoombaApp.cpp roomba/CommandDevice.cpp -o Roomba.exe

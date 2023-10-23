@@ -1,5 +1,5 @@
 #pragma once
-#include "Vector2.h"
+#include "../utils/Vector2.h"
 #include <vector>
 
 enum Commands

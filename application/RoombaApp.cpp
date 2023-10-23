@@ -1,10 +1,11 @@
 #include "RoombaApp.h"
 #include <iostream>
 #include <string>
-#include "Vector2.h"
-#include "Roomba.h"
-#include "InputHandler.h"
-#include "CommandDevice.h"
+
+#include "../utils/Vector2.h"
+#include "../utils/InputHandler.h"
+#include "../roomba/Roomba.h"
+#include "../roomba/CommandDevice.h"
 
 void RoombaApp::Run() 
 {
